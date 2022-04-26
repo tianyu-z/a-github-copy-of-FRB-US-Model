@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pyFRB/US User Guide &#8212; pyFRB/US  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frbus Object API" href="frbus.html" />
+    <link rel="prev" title="pyFRB/US Documentation" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frbus.html" title="Frbus Object API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="pyFRB/US Documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFRB/US User Guide</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="pyfrb-us-user-guide">
+<span id="user-guide"></span><h1>pyFRB/US User Guide<a class="headerlink" href="#pyfrb-us-user-guide" title="Permalink to this headline">¶</a></h1>
+<p>This user guide describes basic usage of the FRB/US model with the pyFRB/US package.
+Users can observe the documented operations in action by running the bundled demo programs.</p>
+<section id="installing">
+<h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
+<p>Before installing pyFRB/US, you must install SuiteSparse (<code class="docutils literal notranslate"><span class="pre">libsuitesparse-dev</span></code> on Linux, or <code class="docutils literal notranslate"><span class="pre">suite-sparse</span></code> on MacOS) and <code class="docutils literal notranslate"><span class="pre">swig</span></code> using your package manager (probably <code class="docutils literal notranslate"><span class="pre">apt</span></code> on Linux, or Homebrew on MacOS).
+On Windows, you can install these dependencies and run pyFRB/US via the Windows Subsystem for Linux (WSL). See the <a class="reference internal" href="#windows"><span class="std std-ref">Windows Installation</span></a> section for details.</p>
+<p>The pyFRB/US package can be installed by running <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> from the
+root directory of this package. Python dependencies should be automatically installed and are listed in <cite>setup.py</cite>.
+pyFRB/US is only compatible with Python 3.</p>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<section id="initialization">
+<h3>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
+<p>To load the model, create a new <code class="docutils literal notranslate"><span class="pre">Frbus</span></code> object using the constructor, pointing it at the provided model XML:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfrbus.frbus</span> <span class="kn">import</span> <span class="n">Frbus</span>
+
+<span class="n">frbus</span> <span class="o">=</span> <span class="n">Frbus</span><span class="p">(</span><span class="s2">&quot;model.xml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The equations of the model are loaded from the XML file’s <code class="docutils literal notranslate"><span class="pre">python_equation</span></code> tags, and each equation is modified
+by adding a tracking residual named with the suffix <code class="docutils literal notranslate"><span class="pre">_trac</span></code>.</p>
+<p>By default, the backward-looking VAR expectations version of FRB/US is loaded.
+The constructor takes an optional argument <cite>mce</cite> which allows users to select which version of the forward-looking rational expectations model to load.
+Valid MCE types are <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">mcap</span></code>, <code class="docutils literal notranslate"><span class="pre">wp</span></code>, and <code class="docutils literal notranslate"><span class="pre">mcap+wp</span></code>.</p>
+<p>The FRB/US dataset can be loaded from the data_only_package with the <code class="docutils literal notranslate"><span class="pre">load_data</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfrbus.load_data</span> <span class="kn">import</span> <span class="n">load_data</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s2">&quot;LONGBASE.TXT&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The model requires that series exist in the input DataFrame for all endogenous and exogenous variables.</p>
+<p>From here, we can initialize the tracking residuals for the model using the <code class="docutils literal notranslate"><span class="pre">init_trac</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="s2">&quot;2019Q4&quot;</span>
+<span class="n">end</span> <span class="o">=</span> <span class="s2">&quot;2030Q4&quot;</span>
+<span class="n">baseline_with_adds</span> <span class="o">=</span> <span class="n">frbus</span><span class="o">.</span><span class="n">init_trac</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">init_trac</span></code> returns a new DataFrame where the <code class="docutils literal notranslate"><span class="pre">_trac</span></code> variables have shocks filled in such that the model will solve to
+the specified baseline values.</p>
+</section>
+<section id="solving">
+<h3>Solving<a class="headerlink" href="#solving" title="Permalink to this headline">¶</a></h3>
+<p>Model simulations are run by calling the <code class="docutils literal notranslate"><span class="pre">solve</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">frbus</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">baseline_with_adds</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This gives a new DataFrame where the series for endogenous variables take on values consistent with the exogenous series, lags, and model equations over the specified period.
+The returned DataFrame is identical to the original outside of the simulation period.
+The solver accepts some options, which are detailed in the <a class="reference internal" href="frbus.html#frbus-object"><span class="std std-ref">Frbus Object API</span></a>, and solver algorithms are described below in the <a class="reference internal" href="#technical-appendix"><span class="std std-ref">Technical Appendix</span></a>.</p>
+<section id="model-consistent-expectations">
+<h4>Model-Consistent Expectations<a class="headerlink" href="#model-consistent-expectations" title="Permalink to this headline">¶</a></h4>
+<p>The solver will automatically detect whether the model is forward-looking and will switch to an algorithm suited for solving such models:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># MCE alert!</span>
+<span class="n">frbus</span> <span class="o">=</span> <span class="n">Frbus</span><span class="p">(</span><span class="s2">&quot;model.xml&quot;</span><span class="p">,</span> <span class="n">mce</span><span class="o">=</span><span class="s2">&quot;mcap+wp&quot;</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="c1"># Returns a solution with forward-looking expectations</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">frbus</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">baseline_with_adds</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>No further user configuration is required; additional options are detailed in the <a class="reference internal" href="frbus.html#frbus-object"><span class="std std-ref">Frbus Object API</span></a>.</p>
+</section>
+</section>
+<section id="mcontrol">
+<h3>mcontrol<a class="headerlink" href="#mcontrol" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> algorithm is a trajectory-matching control procedure which adjusts the value of instrument variables
+such that target variables are forced to specified trajectories, as mediated by the model’s dynamics.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> takes three lists of model variables as input: <cite>targ</cite> is the list of endogenous model variables to be forced;
+<cite>traj</cite> is the list of trajectories to force <cite>targ</cite> variables to; and <cite>inst</cite> is the list of exogenous model variables that
+will be moved freely to control the <cite>targ</cite> variables.</p>
+<p>All three are specified as strings, which must take on the same names as those variables in the input DataFrame.
+<cite>targ</cite> and <cite>traj</cite> are specified in the same order - the first <cite>targ</cite> variable is forced to the first <cite>traj</cite> trajectory, and so on:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assemble trajectories</span>
+<span class="n">baseline_with_adds</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">simstart</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;xgdp_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">baseline_with_adds</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">start_force</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;xgdp_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.001</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">start_force</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;xgdp&quot;</span><span class="p">])</span>
+<span class="n">baseline_with_adds</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">simstart</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;ynicpn_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">baseline_with_adds</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">start_force</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;ynicpn_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.001</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">start_force</span><span class="p">:</span><span class="n">simend</span><span class="p">,</span> <span class="s2">&quot;ynicpn&quot;</span><span class="p">])</span>
+
+<span class="c1"># Run mcontrol</span>
+<span class="n">targ</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;xgdp&quot;</span><span class="p">,</span> <span class="s2">&quot;ynicpn&quot;</span><span class="p">]</span>
+<span class="n">traj</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;xgdp_t&quot;</span><span class="p">,</span> <span class="s2">&quot;ynicpn_t&quot;</span><span class="p">]</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ecnia_aerr&quot;</span><span class="p">,</span> <span class="s2">&quot;ynicpn_aerr&quot;</span><span class="p">]</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">frbus</span><span class="o">.</span><span class="n">mcontrol</span><span class="p">(</span><span class="n">simstart</span><span class="p">,</span> <span class="n">simend</span><span class="p">,</span> <span class="n">baseline_with_adds</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">traj</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>User must set trajectories to <code class="docutils literal notranslate"><span class="pre">numpy.nan</span></code> when not in use.
+When <code class="docutils literal notranslate"><span class="pre">nan</span></code> is given, that trajectory is disabled for the specified quarter and the model’s endogenous behavior takes over.
+Trajectory matching can be done discontinuously by using <code class="docutils literal notranslate"><span class="pre">nan</span></code> during the simulation period.</p>
+</section>
+<section id="stochastic-simulations">
+<h3>Stochastic Simulations<a class="headerlink" href="#stochastic-simulations" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">stochsim</span></code> procedure performs a stochastic simulation by applying
+sequences of shocks to the model, drawn randomly from historical residuals.</p>
+<p>The procedure begins by randomly drawing sequences of quarters from the residual period.
+In each quarter of a single replication, all stochastic variables (specified with a <code class="docutils literal notranslate"><span class="pre">stochastic_type</span></code> tag in the model) have a shock
+applied from a particular quarter in the residual period.</p>
+<p>Before using this procedure, the DataFrame <cite>input_data</cite> must have residuals computed over both history and the simulation period with <code class="docutils literal notranslate"><span class="pre">init_trac</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">stochsim</span></code> is run by specifing the simulation period, residual period, and the number of replications:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simstart</span> <span class="o">=</span> <span class="s2">&quot;2019Q4&quot;</span>
+<span class="n">simend</span> <span class="o">=</span> <span class="s2">&quot;2030Q4&quot;</span>
+<span class="n">residstart</span> <span class="o">=</span> <span class="s2">&quot;1975q1&quot;</span>
+<span class="n">residend</span> <span class="o">=</span> <span class="s2">&quot;2018q4&quot;</span>
+<span class="n">baseline_with_adds</span> <span class="o">=</span> <span class="n">frbus</span><span class="o">.</span><span class="n">init_trac</span><span class="p">(</span><span class="n">residstart</span><span class="p">,</span> <span class="n">simend</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">nrepl</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">frbus</span><span class="o">.</span><span class="n">stochsim</span><span class="p">(</span><span class="n">nrepl</span><span class="p">,</span> <span class="n">baseline_with_adds</span><span class="p">,</span> <span class="n">simstart</span><span class="p">,</span> <span class="n">simend</span><span class="p">,</span> <span class="n">residstart</span><span class="p">,</span> <span class="n">residend</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output is returned as a list of DataFrames, each corresponding to a single replication.</p>
+</section>
+</section>
+<section id="other-features">
+<h2>Other Features<a class="headerlink" href="#other-features" title="Permalink to this headline">¶</a></h2>
+<section id="appending-or-replacing-equations">
+<h3>Appending or Replacing Equations<a class="headerlink" href="#appending-or-replacing-equations" title="Permalink to this headline">¶</a></h3>
+<p>Model equations can be added or modified at run-time with the <code class="docutils literal notranslate"><span class="pre">append_replace</span></code> command.</p>
+<p><code class="docutils literal notranslate"><span class="pre">append_replace</span></code> takes a dictionary, mapping endogenous variable names to their corresponding equations.
+Equations with the same name will be replaced in the model, while equations with new names will be appended:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_eqs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;anngr&quot;</span> <span class="p">:</span> <span class="s2">&quot;anngr = (exp(xgdp)/exp(xgdp(-4)) - 1) * 100&quot;</span><span class="p">}</span>
+<span class="n">frbus</span><span class="o">.</span><span class="n">append_replace</span><span class="p">(</span><span class="n">new_eqs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your equations contain new endogenous or exogenous variables, remember that those variables will each need
+a corresponding series in the DataFrame.</p>
+</section>
+<section id="exogenizing-variables">
+<h3>Exogenizing Variables<a class="headerlink" href="#exogenizing-variables" title="Permalink to this headline">¶</a></h3>
+<p>Endogenous variables can be exogenized with the use of the <code class="docutils literal notranslate"><span class="pre">exogenize</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frbus</span><span class="o">.</span><span class="n">exogenize</span><span class="p">([</span><span class="s2">&quot;rff&quot;</span><span class="p">,</span> <span class="s2">&quot;rg5&quot;</span><span class="p">,</span> <span class="s2">&quot;rg10&quot;</span><span class="p">,</span> <span class="s2">&quot;rg30&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>During simulations, all specified variables will have their equations disabled and will instead take on the values given in the DataFrame.</p>
+<p>Note that all all exogenized variables must be passed in <strong>at the same time</strong>;
+calling <code class="docutils literal notranslate"><span class="pre">exogenize</span></code> twice in a row will result in the loss of earlier <code class="docutils literal notranslate"><span class="pre">exogenize</span></code> settings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This set of modifications is dropped...</span>
+<span class="n">frbus</span><span class="o">.</span><span class="n">exogenize</span><span class="p">([</span><span class="s2">&quot;rff&quot;</span><span class="p">,</span> <span class="s2">&quot;rg5&quot;</span><span class="p">])</span>
+<span class="c1"># when you make another change!</span>
+<span class="n">frbus</span><span class="o">.</span><span class="n">exogenize</span><span class="p">([</span><span class="s2">&quot;rg10&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The correct usage requires all changes to be passed in as a single list.</p>
+</section>
+</section>
+<section id="tips-tricks">
+<h2>Tips &amp; Tricks<a class="headerlink" href="#tips-tricks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Many pyFRB/US functions takes a <cite>start</cite> and <cite>end</cite> date, which can be passed in either as strings or as <cite>pandas</cite> Period objects.
+Using <cite>pandas</cite> Period objects allows for easier date-shift operations in your programs - e.g. <code class="docutils literal notranslate"><span class="pre">Period(&quot;2019Q4&quot;)+1</span></code> gives <code class="docutils literal notranslate"><span class="pre">Period(&quot;2020Q1&quot;)</span></code>.</p></li>
+<li><p>Simulations run under VAR expectations may fail to solve with the default algorithm - switching to the “newton” solver may improve convergence.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">sim_lib</span></code> module has functions <code class="docutils literal notranslate"><span class="pre">sim_plot</span></code> and <code class="docutils literal notranslate"><span class="pre">stochsim_plot</span></code>, which can be used to visualize simulation and stochsim results.
+Standard usage can be seen in the demo programs.</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">options</span></code> dictionary can be passed to <code class="docutils literal notranslate"><span class="pre">solve</span></code>, <code class="docutils literal notranslate"><span class="pre">stochsim</span></code>, and <code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> - documentation of usable options
+is listed under <code class="docutils literal notranslate"><span class="pre">solve</span></code> in the <a class="reference internal" href="frbus.html#frbus-object"><span class="std std-ref">Frbus Object API</span></a>.</p></li>
+<li><p>If plots do not display, you may need to configure the default backend used by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p></li>
+</ul>
+<section id="windows-installation">
+<span id="windows"></span><h3>Windows Installation<a class="headerlink" href="#windows-installation" title="Permalink to this headline">¶</a></h3>
+<p>You must be on a recent version of Windows 10 or Windows 11 to use pyFRB/US.
+First, install the Windows Subsystem for Linux (WSL) by following <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install">these instructions</a>.</p>
+<p>After opening a Linux terminal in WSL, you can install Python 3 and the UMFPACK dependencies the usual way with <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">python3</span> <span class="pre">python3-pip</span> <span class="pre">libsuitesparse-dev</span> <span class="pre">swig</span></code>.
+From here, you can install the pyFRB/US package using <code class="docutils literal notranslate"><span class="pre">pip</span></code> (or <code class="docutils literal notranslate"><span class="pre">pip3</span></code>) and run example programs with <code class="docutils literal notranslate"><span class="pre">python3</span></code>.</p>
+<p>Note that for most systems, WSL is not configured for graphical display by default so plots will not render if running from the command line.
+However, you can run pyFRB/US programs from Microsoft’s Visual Studio Code (VSCode) editor which will correctly display plots.
+Install <a class="reference external" href="https://code.visualstudio.com/">VSCode</a> on your Windows computer, then <a class="reference external" href="https://code.visualstudio.com/docs/remote/wsl-tutorial">connect WSL with VSCode</a>.
+Now you can open pyFRB/US demos in VSCode and run them with “Run Current File in Interactive Window” under the right-click menu.</p>
+</section>
+</section>
+</section>
+<section id="technical-appendix">
+<span id="id1"></span><h1>Technical Appendix<a class="headerlink" href="#technical-appendix" title="Permalink to this headline">¶</a></h1>
+<p>This appendix includes technical information on the implementation of parts of the pyFRB/US platform.
+The solver accepts user-configurable options, some of which are detailed below.
+A full list is available in the <a class="reference internal" href="frbus.html#frbus-object"><span class="std std-ref">Frbus Object API</span></a>.</p>
+<section id="jacobian-and-supported-functions">
+<h2>Jacobian and Supported Functions<a class="headerlink" href="#jacobian-and-supported-functions" title="Permalink to this headline">¶</a></h2>
+<p>In pyFRB/US, the model Jacobian is computed symbolically using SymPy and SymEngine; there is no option for a numerically-approximated Jacobian.
+As a result, the platform supports a limited number of functions to be used in model equations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">exp</span></code>, and <code class="docutils literal notranslate"><span class="pre">abs</span></code> are supported.
+<code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> are supported and take varargs.</p>
+<p>Additionally, you can use the function <code class="docutils literal notranslate"><span class="pre">ind_ltezero</span></code> as an indicator function.
+<code class="docutils literal notranslate"><span class="pre">ind_ltezero</span></code> takes a single argument. If the input is less than or equal to 0, the function returns 1, and otherwise returns 0.</p>
+</section>
+<section id="var-solver-algorithm">
+<h2>VAR Solver Algorithm<a class="headerlink" href="#var-solver-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The default solver for the VAR expectations model uses the dense Powell hybrid method from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.root.html">scipy.optimize.root</a>.
+The model itself is decomposed into purely simultaneous and non-simultaneous blocks so that each call to the solver is as small as possible.
+Each time period in the simulation range is solved iteratively in sequence.
+The initial starting “guess” for the algorithm is taken from that quarter in the input data.</p>
+<p>The VAR expectations model can also be used with the sparse Newton and trust-region algorithms detailed under <a class="reference internal" href="#mce-solver"><span class="std std-ref">MCE Solver Algorithm</span></a> by passing in the <cite>options</cite> dictionary.
+Users should try these methods if the model fails to solve with the default algorithm.
+In this case the model is still solved by iterating over each time period.</p>
+</section>
+<section id="mce-solver-algorithm">
+<span id="mce-solver"></span><h2>MCE Solver Algorithm<a class="headerlink" href="#mce-solver-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The MCE solver assembles the model into a stacked-time system.
+Model equations are duplicated for each period in the simulation range and
+terminal values are substituted for forward-looking variables past the end of that range.
+The model is then solved for all periods simultaneously.</p>
+<p>The terminal conditions used for the stacked-time system are drawn from the input data at the given number of quarters past the end of the simulation range.
+For example, an equation containing the term <code class="docutils literal notranslate"><span class="pre">xgdp(2)</span></code> will, in the final period of the simulation, take its value from the series <cite>xgdp</cite> two quarters past the end of the simulation range.
+The initial starting “guess” for the algorithm is taken from each quarter in the input data.</p>
+<p>The MCE solver provides two solution algorithms: sparse Newton and sparse trust-region. The default is Newton.
+Both algorithms use the sparse solver from UMFPACK, and both algorithms use a diagonal preconditioner to standardize scaling across model variables.
+The preconditioner can be disabled by passing <code class="docutils literal notranslate"><span class="pre">False</span></code> as the <code class="docutils literal notranslate"><span class="pre">precond</span></code> option in the <code class="docutils literal notranslate"><span class="pre">options</span></code> dictionary.</p>
+<section id="newton">
+<span id="id2"></span><h3>Newton<a class="headerlink" href="#newton" title="Permalink to this headline">¶</a></h3>
+<p>The Newton algorithm includes a damping procedure to avoid domain violations in the model;
+if the Newton step would produce <code class="docutils literal notranslate"><span class="pre">nan</span></code> in a model equation, the stepsize is scaled down until the domain is satisfied.
+A scaling factor of less than <code class="docutils literal notranslate"><span class="pre">1e-5</span></code> will result in a <code class="docutils literal notranslate"><span class="pre">ConvergenceError</span></code> and a failed solution.</p>
+<p>The solver terminates when the 2-norm of the next step is less than <code class="docutils literal notranslate"><span class="pre">xtol</span></code>, which can be specified by the user and defaults to <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>.
+If the solver iterates for more than <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> iterations without reaching the tolerance level, the procedure will return a <code class="docutils literal notranslate"><span class="pre">ConvergenceError</span></code>.
+Difficult problems may require more iterations; <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> defaults to 50 and can be specified by the user.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">xtol</span></code> is satisfied but the remaining residual is larger than <code class="docutils literal notranslate"><span class="pre">rtol</span></code>, the procedure will return a <code class="docutils literal notranslate"><span class="pre">ConvergenceError</span></code>.
+A large residual with a small stepsize indicates that the algorithm has converged to a “point of no interest” that does not actually satisfy the model equations.
+<code class="docutils literal notranslate"><span class="pre">rtol</span></code> can be specified by the user and defaults to <code class="docutils literal notranslate"><span class="pre">5e-4</span></code>.</p>
+</section>
+<section id="trust-region">
+<h3>Trust-Region<a class="headerlink" href="#trust-region" title="Permalink to this headline">¶</a></h3>
+<p>The trust-region algorithm is the standard Powell Newton dogleg method, which can be seen in <em>Numerical Optimization</em> by Nocedal and Wright.
+This procedure limits the iteration step to be within a certain radius where the model is known to be approximately linear.
+The size of this region is adjusted dynamically based on how close the actual improvement at each step is to the theoretical improvement in a linearized system.
+Additionally, the procedure takes “dogleg” steps where the step direction is taken to be the optimal linear combination of the Newton step and the
+gradient descent step which maximizes the residual improvement.</p>
+<p>The trust-region solver takes an option <code class="docutils literal notranslate"><span class="pre">trust_radius</span></code>, which defaults to 1000000.
+<code class="docutils literal notranslate"><span class="pre">trust_radius</span></code> specifies the maximum possible size of the trust region; the starting size of the trust region is taken as <code class="docutils literal notranslate"><span class="pre">trust_radius</span> <span class="pre">/</span> <span class="pre">2</span></code>.
+The trust-region algorithm also takes <code class="docutils literal notranslate"><span class="pre">maxiter</span></code>, <code class="docutils literal notranslate"><span class="pre">xtol</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtol</span></code> options as specified in the <a class="reference internal" href="#newton"><span class="std std-ref">Newton</span></a> section.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">pyFRB/US User Guide</a><ul>
+<li><a class="reference internal" href="#installing">Installing</a></li>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li><a class="reference internal" href="#initialization">Initialization</a></li>
+<li><a class="reference internal" href="#solving">Solving</a><ul>
+<li><a class="reference internal" href="#model-consistent-expectations">Model-Consistent Expectations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mcontrol">mcontrol</a></li>
+<li><a class="reference internal" href="#stochastic-simulations">Stochastic Simulations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-features">Other Features</a><ul>
+<li><a class="reference internal" href="#appending-or-replacing-equations">Appending or Replacing Equations</a></li>
+<li><a class="reference internal" href="#exogenizing-variables">Exogenizing Variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tips-tricks">Tips &amp; Tricks</a><ul>
+<li><a class="reference internal" href="#windows-installation">Windows Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#technical-appendix">Technical Appendix</a><ul>
+<li><a class="reference internal" href="#jacobian-and-supported-functions">Jacobian and Supported Functions</a></li>
+<li><a class="reference internal" href="#var-solver-algorithm">VAR Solver Algorithm</a></li>
+<li><a class="reference internal" href="#mce-solver-algorithm">MCE Solver Algorithm</a><ul>
+<li><a class="reference internal" href="#newton">Newton</a></li>
+<li><a class="reference internal" href="#trust-region">Trust-Region</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frbus.html" title="Frbus Object API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="pyFRB/US Documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyFRB/US User Guide</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

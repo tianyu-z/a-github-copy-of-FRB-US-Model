@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Frbus Object API &#8212; pyFRB/US  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Time-Series Operation Documentation" href="time_series.html" />
+    <link rel="prev" title="pyFRB/US User Guide" href="user_guide.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="time_series.html" title="Time-Series Operation Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="user_guide.html" title="pyFRB/US User Guide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Frbus Object API</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pyfrbus">
+<span id="frbus-object-api"></span><span id="frbus-object"></span><h1>Frbus Object API<a class="headerlink" href="#module-pyfrbus" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus" title="pyfrbus.frbus.Frbus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus</span></code></a>(filepath[, mce])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.__init__" title="pyfrbus.frbus.Frbus.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.__init__</span></code></a>(filepath[, mce])</p></td>
+<td><p>Initialize FRB/US model object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.append_replace" title="pyfrbus.frbus.Frbus.append_replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.append_replace</span></code></a>(eqs_map)</p></td>
+<td><p>Append new equations to the model, or replace existing equations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.exogenize" title="pyfrbus.frbus.Frbus.exogenize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.exogenize</span></code></a>(exoglist)</p></td>
+<td><p>Exogenize a list of endogenous variables in the model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.init_trac" title="pyfrbus.frbus.Frbus.init_trac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.init_trac</span></code></a>(start, end, input_data)</p></td>
+<td><p>Initialize tracking residuals (add-factors).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.mcontrol" title="pyfrbus.frbus.Frbus.mcontrol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.mcontrol</span></code></a>(start, end, input_data, ...)</p></td>
+<td><p>Solve model, forcing target variables to specified trajectories.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.solve" title="pyfrbus.frbus.Frbus.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.solve</span></code></a>(start, end, input_data[, ...])</p></td>
+<td><p>Solve the model over the given dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyfrbus.frbus.Frbus.stochsim" title="pyfrbus.frbus.Frbus.stochsim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frbus.Frbus.stochsim</span></code></a>(nrepl, input_data, ...)</p></td>
+<td><p>Runs a series of simulations with shocks drawn from historical residuals.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyfrbus.frbus.</span></span><span class="sig-name descname"><span class="pre">Frbus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize FRB/US model object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – Path to FRB/US model file in .xml format</p></li>
+<li><p><strong>mce</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Option to load MCE equations.
+Valid MCE types are <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">mcap</span></code>, <code class="docutils literal notranslate"><span class="pre">wp</span></code>, and <code class="docutils literal notranslate"><span class="pre">mcap+wp</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>FRB/US model object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyfrbus.frbus.Frbus" title="pyfrbus.frbus.Frbus">Frbus</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.append_replace">
+<span class="sig-name descname"><span class="pre">append_replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eqs_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.append_replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.append_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append new equations to the model, or replace existing equations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>eqs_map</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary mapping equation names to equations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.exogenize">
+<span class="sig-name descname"><span class="pre">exogenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exoglist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.exogenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.exogenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exogenize a list of endogenous variables in the model.</p>
+<p>This function takes a list of endogenous variables present in the model and
+transforms them into exogenous variables.
+Note: all variables that you want to be exogenous must
+be passed in as <cite>exoglist</cite> at the same time. Calling <code class="docutils literal notranslate"><span class="pre">exogenize</span></code> twice in a
+row will give a model with only the second <cite>exoglist</cite> variables exogenized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exoglist</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of endogenous model variables</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.init_trac">
+<span class="sig-name descname"><span class="pre">init_trac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.init_trac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.init_trac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize tracking residuals (add-factors).</p>
+<p>Given a baseline dataset <cite>input_data</cite> and a date range <cite>start</cite> to <cite>end</cite>,
+<code class="docutils literal notranslate"><span class="pre">init_trac</span></code> will compute tracking residuals such that each equation will solve
+to the trajectory given for that variable in <cite>input_data</cite>.
+As in, <code class="docutils literal notranslate"><span class="pre">output</span> <span class="pre">=</span> <span class="pre">model.init_trac(start,</span> <span class="pre">end,</span> <span class="pre">input_data)</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">model.solve(start,</span> <span class="pre">end,</span> <span class="pre">output)</span></code> will be the same as <code class="docutils literal notranslate"><span class="pre">output</span></code>.</p>
+<p>Tracking residuals are stored in additional columns in <code class="docutils literal notranslate"><span class="pre">output</span></code>, named
+according to their respective endogenous variables, e.g. the tracking residual
+for <code class="docutils literal notranslate"><span class="pre">xgdp</span></code> is stored as <code class="docutils literal notranslate"><span class="pre">xgdp_trac</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to begin computing residuals</p></li>
+<li><p><strong>end</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to end residuals (inclusive)</p></li>
+<li><p><strong>input_data</strong> (<em>DataFrame</em>) – Dataset with trajectories that residuals are computed with respect to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – <cite>input_data</cite> plus columns for tracking residuals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.mcontrol">
+<span class="sig-name descname"><span class="pre">mcontrol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.mcontrol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.mcontrol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve model, forcing target variables to specified trajectories.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> is a trajectory-matching control procedure which adjusts the value
+of instrument variables such that target variables are forced to specified
+trajectories, as mediated by the model’s dynamics.</p>
+<p><cite>targ</cite> is a list of model variables (“targets”), and <cite>traj</cite> is the list of
+series in <cite>input_data</cite> that those variables should be forced to
+(“trajectories”), in the same order; e.g. the first variable in <cite>targ</cite> is
+matched to the first trajectory in <cite>traj</cite>, etc.</p>
+<p><cite>inst</cite> is a list of exogenous model variables (“instruments”) which will take
+on values such that the trajectories are achieved. The selected instruments may
+be unable to achieve the specified trajectories - e.g. because there is no
+instrument which is able to affect one or more of the specified targets, or
+because one or more of the specified trajectories contains an invalid value for
+that target variable. In that case, the model will fail to solve and an error
+will instruct you to verify that your setup for <code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> is valid.</p>
+<p>Targets are only forced to their trajectories when a trajectory is present. A
+particular target can be disabled by setting the corresponding trajectory to
+<code class="docutils literal notranslate"><span class="pre">numpy.nan</span></code> over the date range where it should be inactive. When the
+trajectory is set to <code class="docutils literal notranslate"><span class="pre">numpy.nan</span></code>, the corresponding target is allowed to take
+on the value produced by the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to begin computing solution</p></li>
+<li><p><strong>end</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to end solution (inclusive)</p></li>
+<li><p><strong>input_data</strong> (<em>DataFrame</em>) – Dataset to solve over, including series for trajectories specified in <cite>traj</cite></p></li>
+<li><p><strong>targ</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of endogenous model variables to force (in order)</p></li>
+<li><p><strong>traj</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of trajectories in <cite>input_data</cite> to force <cite>targ</cite> variables to (in order)</p></li>
+<li><p><strong>inst</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Instruments used to control forcing procedure</p></li>
+<li><p><strong>options</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>]</em>) – Options passed to solver - see additional documentation under
+<code class="docutils literal notranslate"><span class="pre">Frbus.solve</span></code>. Some options will be overridden if they are unable to be
+used with <code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> procedure; <code class="docutils literal notranslate"><span class="pre">mcontrol</span></code> requires the use of either
+Newton or trust-region solvers (defaults to <code class="docutils literal notranslate"><span class="pre">&quot;newton&quot;</span></code>) and requires
+<code class="docutils literal notranslate"><span class="pre">single_block</span></code> set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – Dataset shaped like <cite>input_data</cite>, with a solution consistent with the
+specified forced trajectories between <cite>start</cite> and <cite>end</cite>, inclusive. Data
+from <cite>output</cite> outside this period is identical to <cite>input_data</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the model over the given dataset.</p>
+<p>Given the DataFrame <cite>input_data</cite>, this procedure returns the model solution
+over the period from <cite>start</cite> to <cite>end</cite>. Detailed information on the solution
+algorithm can be found in the User Guide.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Frbus.solve</span></code> will solve both backwards-looking VAR and forwards-looking MCE
+(model-consistent expectations/rational expectations) models. The <cite>options</cite>
+dictionary can be passed to configure the solution algorithm, as specified
+below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to begin computing solution</p></li>
+<li><p><strong>end</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to end solution (inclusive)</p></li>
+<li><p><strong>input_data</strong> (<em>DataFrame</em>) – Dataset to solve over</p></li>
+<li><p><strong>options</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>]</em>) – <dl class="simple">
+<dt>Options to pass to solver:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">newton:</span> <span class="pre">Optional[str]</span></code></dt><dd><p>Whether to use sparse Newton’s method solver (<code class="docutils literal notranslate"><span class="pre">&quot;newton&quot;</span></code>),
+sparse trust-region solver (<code class="docutils literal notranslate"><span class="pre">&quot;trust&quot;</span></code>), or dense solver from SciPy
+(<code class="docutils literal notranslate"><span class="pre">None</span></code>).
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">single_block:</span> <span class="pre">bool</span></code></dt><dd><p>When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, disables the VAR  block decomposition step.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">debug:</span> <span class="pre">bool</span></code></dt><dd><p>When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, enables verbose output of solver status.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">xtol:</span> <span class="pre">float</span></code></dt><dd><p>Set stepsize termination condition for Newton and trust-region
+algorithms. Use a smaller value for more precise solution, at the
+expense of runtime. Defaults to <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rtol:</span> <span class="pre">float</span></code></dt><dd><p>Set residual termination condition for Newton and trust-region
+algorithms. Solver will fail if step reaches <code class="docutils literal notranslate"><span class="pre">xtol</span></code> but residual
+is greater than <code class="docutils literal notranslate"><span class="pre">rtol</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">5e-4</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">maxiter:</span> <span class="pre">int</span></code></dt><dd><p>Maximum number of iterations for Newton and trust-region algorithms.
+Solver will fail if algorithm iterates <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> times without
+reaching <code class="docutils literal notranslate"><span class="pre">xtol</span></code>. Increase to allow more time for convergence.
+Defaults to <code class="docutils literal notranslate"><span class="pre">50</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">trust_radius:</span> <span class="pre">float</span></code></dt><dd><p>Maximum size of the trust radius in trust-region algorithm. Altering
+radius can change convergence path. Defaults to <code class="docutils literal notranslate"><span class="pre">1000000</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">precond:</span> <span class="pre">bool</span></code></dt><dd><p>When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, use matrix preconditioner to decrease
+condition number of Jacobian. Disable if it causes problems.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – Dataset shaped like <cite>input_data</cite>, with trajectories for endogenous variables
+produced by model solution between <cite>start</cite> and <cite>end</cite>, inclusive. Data in
+<cite>output</cite> from outside this period is identical to <cite>input_data</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfrbus.frbus.Frbus.stochsim">
+<span class="sig-name descname"><span class="pre">stochsim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nrepl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiproc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nextra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfrbus/frbus.html#Frbus.stochsim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfrbus.frbus.Frbus.stochsim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a series of simulations with shocks drawn from historical residuals.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">stochsim</span></code> procedure performs a stochastic simulation by applying
+sequences of shocks to the model, as drawn randomly from historical residuals.
+Before using this procedure, the DataFrame <cite>input_data</cite> must have residuals
+computed over both history and the simulation period with <code class="docutils literal notranslate"><span class="pre">Frbus.init_trac'</span></code>.</p>
+<p>The procedure begins by drawing <cite>nrepl</cite> sequences of quarters from the dataset
+<cite>input_data</cite> over the periods <cite>residstart</cite> to <cite>residend</cite>, where the length of
+that sequence goes from <cite>simstart</cite> to <cite>simend</cite>. That is, for a particular
+replication, each quarter in the simulation period is randomly assigned a
+quarter from residual period. In that quarter of the simulation, all stochastic
+variables (specified with a <code class="docutils literal notranslate"><span class="pre">stochastic_type</span></code> tag in the model) have a shock
+applied from a particular quarter in the residual period, where the shock values
+are pulled from the <code class="docutils literal notranslate"><span class="pre">_trac</span></code> variables in <code class="docutils literal notranslate"><span class="pre">input_data</span></code> - e.g., the variable
+<code class="docutils literal notranslate"><span class="pre">xgdp</span></code> is shocked with a value pulled from <code class="docutils literal notranslate"><span class="pre">xgdp_trac</span></code> over history.</p>
+<p>These scenarios are passed to the solver, in parallel if <cite>multiproc</cite> is set to
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, and the solutions are returned as a list of DataFrames. Any failed
+simulations will be returned as an error string. The argument <cite>nextra</cite> can be
+passed to allow the procedure to run extra simulations to replace those
+failures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nrepl</strong> (<em>int</em>) – Number of simulations to run</p></li>
+<li><p><strong>input_data</strong> (<em>DataFrame</em>) – Dataset to solve over</p></li>
+<li><p><strong>simstart</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to begin computing solution</p></li>
+<li><p><strong>simend</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to end solution (inclusive)</p></li>
+<li><p><strong>residstart</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to begin drawing shocks</p></li>
+<li><p><strong>residend</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Period</em><em>]</em>) – Date to end drawing shocks (inclusive)</p></li>
+<li><p><strong>multiproc</strong> (<em>bool</em>) – Option to run simulations in parallel</p></li>
+<li><p><strong>nextra</strong> (<em>int</em>) – Option to specify how many additional simulations to run, in case of errors</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed used when drawing shocks</p></li>
+<li><p><strong>options</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>]</em>) – Options passed to solver - see additional documentation under
+<code class="docutils literal notranslate"><span class="pre">Frbus.solve</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>solutions</strong> – List of datasets shaped like <cite>input_data</cite>, with solutions to stochastic
+simulations as returned from <code class="docutils literal notranslate"><span class="pre">Frbus.solve</span></code>. List contains error strings
+instead of data for simulations that fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Union[DataFrame, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="time_series.html" title="Time-Series Operation Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="user_guide.html" title="pyFRB/US User Guide"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Frbus Object API</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

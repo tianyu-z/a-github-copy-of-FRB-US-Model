@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Time-Series Operation Documentation &#8212; pyFRB/US  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Frbus Object API" href="frbus.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frbus.html" title="Frbus Object API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Time-Series Operation Documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="time-series-operation-documentation">
+<span id="time-series"></span><h1>Time-Series Operation Documentation<a class="headerlink" href="#time-series-operation-documentation" title="Permalink to this headline">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In the FRB/US model, equations are written in a domain-specific notation for time series:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ptr - ptr_aerr = 0.9 * ptr(-1) + 0.05 * picxfe(-1) + 0.05 * pitarg(-1)
+</pre></div>
+</div>
+<p>This notation declaratively expresses a relationship that holds <em>recursively</em>,
+i.e. the expression refers to past values of other series to denote a relation that holds at all points in time.</p>
+<p>The <cite>TimeSeriesData</cite> object in the PyFRB/US package is a <cite>DataFrame</cite> wrapper that enables the use of this notation
+to perform recursive operations on time-series datasets.</p>
+<p>Let’s say that, over the date range <cite>periods</cite> you want the variable <code class="docutils literal notranslate"><span class="pre">lur</span></code> in <cite>data_frame</cite> to converge towards <code class="docutils literal notranslate"><span class="pre">lurnat</span></code> with an inertia of <code class="docutils literal notranslate"><span class="pre">0.9</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfrbus.time_series_data</span> <span class="kn">import</span> <span class="n">TimeSeriesData</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">data_frame</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">periods</span>
+<span class="n">d</span><span class="o">.</span><span class="n">lur</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">lur</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">lurnat</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This modifies the underlying series <code class="docutils literal notranslate"><span class="pre">lur</span></code> in <cite>data_frame</cite>.
+After running this code, you can inspect <cite>data_frame</cite> to see that, at each point in time, the previously-modified value of <code class="docutils literal notranslate"><span class="pre">lur(-1)</span></code> is used
+to compute the new value in the next period (rather than using the original value of <code class="docutils literal notranslate"><span class="pre">lur</span></code> in <cite>data_frame</cite>).</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To initialize the <cite>TimeSeriesData</cite> object, we pass it a reference to our dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">data_frame</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we specify the range over which to operate as a quarterly <cite>pandas</cite> <cite>PeriodIndex</cite> object:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">period_range</span>
+<span class="n">d</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">period_range</span><span class="p">(</span><span class="s2">&quot;2019Q4&quot;</span><span class="p">,</span> <span class="s2">&quot;2030Q4&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>TimeSeriesData</cite> will also optionally accept the range on initialization, and it can be changed later:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">periods</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">lur</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">lur</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">lurnat</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Second set of operations occur on a different horizon</span>
+<span class="n">d</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">other_periods</span>
+<span class="n">d</span><span class="o">.</span><span class="n">xgdp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">xgdp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.007</span>
+</pre></div>
+</div>
+<p>As seen in the examples, the left-hand side has the series to be assigned attached as a suffix to the <cite>TimeSeriesData</cite> object.
+The right-hand side is an expression of time-series operations where series are referred to by attaching their names to the <cite>TimeSeriesData</cite> object.</p>
+<p>Previous and contemporaneous values from series are indicated by indices -
+e.g. <code class="docutils literal notranslate"><span class="pre">d.lur(-1)</span></code> for the value of <code class="docutils literal notranslate"><span class="pre">lur</span></code> one period previous, and <code class="docutils literal notranslate"><span class="pre">d.lurnat(0)</span></code> for the value of lurnat in the current period.</p>
+<p>Series present in the dataset can be used in time-series operations along with floating point numbers.</p>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<p>Common functions (<code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">exp</span></code>, <code class="docutils literal notranslate"><span class="pre">abs</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code>, and <code class="docutils literal notranslate"><span class="pre">min</span></code>) can be used in time-series operations as well, if they are imported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfrbus.time_series_data</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="nb">min</span>
+<span class="n">d</span><span class="o">.</span><span class="n">xgdp</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">xgdp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.007</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">xgdpt</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">d</span><span class="o">.</span><span class="n">loggdp</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">xgdp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="defining-new-series">
+<h3>Defining New Series<a class="headerlink" href="#defining-new-series" title="Permalink to this headline">¶</a></h3>
+<p>Time-series operations can be used to define new series as well, as in <code class="docutils literal notranslate"><span class="pre">loggdp</span></code> above. These series will be appended to the <cite>DataFrame</cite>.</p>
+</section>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this headline">¶</a></h2>
+<section id="series-must-exist-before-use">
+<h3>Series Must Exist Before Use<a class="headerlink" href="#series-must-exist-before-use" title="Permalink to this headline">¶</a></h3>
+<p>To use a series in time-series operations, that series <strong>must first exist in the data frame</strong>.</p>
+<p>For example, this <strong>will work</strong>, because the right-hand side expressions only refer to scalars and already-extant series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">newexo</span> <span class="o">=</span> <span class="mf">9.99</span>
+<span class="n">d</span><span class="o">.</span><span class="n">newgdp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">xgdp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.98</span>
+</pre></div>
+</div>
+<p>But this <strong>will not work</strong>, because it references lags of the series <code class="docutils literal notranslate"><span class="pre">newgdp</span></code> in a recursive expression before it was created:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">newgdp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">newgdp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.007</span>
+</pre></div>
+</div>
+<p>The correct way to handle this situation is to first add baseline data for the new series to <code class="docutils literal notranslate"><span class="pre">data_frame</span></code>.</p>
+</section>
+<section id="future-indices">
+<h3>Future Indices<a class="headerlink" href="#future-indices" title="Permalink to this headline">¶</a></h3>
+<p><strong>Only references to past and present time periods can be used in time-series operations.</strong></p>
+<p>Expressions like <code class="docutils literal notranslate"><span class="pre">lur(-2)</span></code> and <code class="docutils literal notranslate"><span class="pre">xgdpt(0)</span></code> are acceptable, but forward-looking expressions like <code class="docutils literal notranslate"><span class="pre">picxfe(1)</span></code> will not work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This works</span>
+<span class="n">d</span><span class="o">.</span><span class="n">xgdp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">xgdp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.007</span>
+<span class="c1"># This throws a ValueError</span>
+<span class="n">d</span><span class="o">.</span><span class="n">zpicxfe</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">picxfe</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Time-Series Operation Documentation</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#defining-new-series">Defining New Series</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#caveats">Caveats</a><ul>
+<li><a class="reference internal" href="#series-must-exist-before-use">Series Must Exist Before Use</a></li>
+<li><a class="reference internal" href="#future-indices">Future Indices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frbus.html" title="Frbus Object API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyFRB/US  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Time-Series Operation Documentation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>
