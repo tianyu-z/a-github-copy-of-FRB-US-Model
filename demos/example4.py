@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+
 import pandas
 from numpy import array, cumprod
 

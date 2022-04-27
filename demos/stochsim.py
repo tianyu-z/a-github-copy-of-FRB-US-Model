@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+
 from pyfrbus.frbus import Frbus
 from pyfrbus.sim_lib import stochsim_plot
 from pyfrbus.load_data import load_data

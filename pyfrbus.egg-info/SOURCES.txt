@@ -1,0 +1,8 @@
+LICENSE
+README
+setup.py
+pyfrbus.egg-info/PKG-INFO
+pyfrbus.egg-info/SOURCES.txt
+pyfrbus.egg-info/dependency_links.txt
+pyfrbus.egg-info/requires.txt
+pyfrbus.egg-info/top_level.txt

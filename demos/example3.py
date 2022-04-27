@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+
 import pandas
 
 from pyfrbus.frbus import Frbus
